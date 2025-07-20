@@ -17,7 +17,7 @@ const AuthModal = ({ onSuccess, onClose }) => {
         setLoading(true);
         setError('');
         try {
-            await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/send-otp`, { email });
+            await axios.post("https://careerbackend-1-hoxd.onrender.com/api/send-otp", { email });
             toast.success('OTP sent to your email!');
             setOtpSent(true);
         } catch (err) {

@@ -49,7 +49,7 @@ const Booking = () => {
         if (selectedPlan === 'Executive guidance') amount = 2800;
 
     try {
-        const { data } = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/create-order`, {
+        const { data } = await axios.post("https://careerbackend-1-hoxd.onrender.com/api/create-order", {
             amount,
         });
         
@@ -66,7 +66,7 @@ const Booking = () => {
                const guideEmail = storedGuide?.email || '';
         toast.success(`Payment Successful! Payment ID: ${response.razorpay_payment_id}`);
         try {
-          await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/create-booking`, {
+          await axios.post("https://careerbackend-1-hoxd.onrender.com/api/create-booking", {
         fullName: formData.fullName,
         email: formData.email,
         phone: formData.phone,

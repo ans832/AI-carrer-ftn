@@ -95,7 +95,7 @@ const handleQuizSubmit = async () => {
     setLoading(true);
 
     try {
-        const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/chat`, {
+        const res = await axios.post("https://careerbackend-1-hoxd.onrender.com/api/chat", {
             answers: answersArray
         });
         const aiMessage = {
