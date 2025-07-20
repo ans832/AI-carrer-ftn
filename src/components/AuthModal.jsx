@@ -37,8 +37,8 @@ const AuthModal = ({ onSuccess, onClose }) => {
     setLoading(true);
     setError('');
     try {
-        const response = await axios.post('http://localhost:3000/api/verify-otp', { email, otp });
-        
+        const response = await axios.post("https://careerbackend-1-hoxd.onrender.com/api/verify-otp", { email, otp });
+
         // ✅ Store JWT token securely
         localStorage.setItem('token', response.data.token);
 
