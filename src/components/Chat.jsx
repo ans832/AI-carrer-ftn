@@ -42,7 +42,7 @@ const Chat = () => {
                 return;
             }
 
-            const res = await axios.post('http://localhost:3000/api/chat', { message: userMessage.text });
+            const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/chat`, { message: userMessage.text });
 
             if (res.data.response.type === "quiz") {
                 setQuizQuestions(res.data.response.questions);
@@ -95,7 +95,7 @@ const handleQuizSubmit = async () => {
     setLoading(true);
 
     try {
-        const res = await axios.post('http://localhost:3000/api/chat', {
+        const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/chat`, {
             answers: answersArray
         });
         const aiMessage = {

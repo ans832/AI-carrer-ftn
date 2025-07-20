@@ -1,10 +1,37 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
 import axios from 'axios';
 
 
 const Booking = () => {
+    const location = useLocation();
+    const [guide, setGuide] = useState(location.state?.guide || null);
+
+      useEffect(() => {
+          if (!guide) {
+              const storedGuide = localStorage.getItem('selectedGuide');
+              if (storedGuide) {
+                  setGuide(JSON.parse(storedGuide));
+              }
+          }
+      }, [guide]);
+
+      useEffect(() => {
+          if (guide) {
+              console.log('Selected Guide:', guide.email);
+          }
+      }, [guide]);
+
+    const [selectedPlan, setSelectedPlan] = useState('Standard guidance');
+    const [dates, setDates] = useState({
+    firstDate: '',
+    lastDate: ''
+});
+
+
     const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -17,24 +44,49 @@ const Booking = () => {
   const handleConfirmBooking = async (e) => {
     e.preventDefault();
 
-    const amount = 1200; // default, or dynamic based on selected plan
+            let amount = 1;
+        if (selectedPlan === 'Deluxe guidance') amount = 1800;
+        if (selectedPlan === 'Executive guidance') amount = 2800;
 
     try {
-        const { data } = await axios.post('http://localhost:3000/api/create-order', {
+        const { data } = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/create-order`, {
             amount,
         });
+        
 
         const options = {
-            key: 'your_key_id_here', // replace with your Razorpay key_id
+            key: 'rzp_live_AsdrTTugwJyHR3', // replace with your Razorpay key_id
             amount: data.amount,
             currency: data.currency,
             name: 'AI Career Nav',
             description: 'Live Session Booking',
             order_id: data.id,
-            handler: function (response) {
-                alert(`Payment Successful! Payment ID: ${response.razorpay_payment_id}`);
-                navigate('/success'); // or show confirmation
-            },
+            handler: async function (response) {
+               const storedGuide = JSON.parse(localStorage.getItem('selectedGuide'));
+               const guideEmail = storedGuide?.email || '';
+        toast.success(`Payment Successful! Payment ID: ${response.razorpay_payment_id}`);
+        try {
+          await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/create-booking`, {
+        fullName: formData.fullName,
+        email: formData.email,
+        phone: formData.phone,
+        selectedPlan,
+        amount,
+        paymentId: response.razorpay_payment_id,
+        dates,
+        guideEmail
+      // send to backend
+    });
+    
+
+        navigate('/');
+    } catch (error) {
+        console.error('Error saving booking:', error);
+        toast.error('Payment succeeded, but failed to save booking.');
+    }
+},
+
+
             prefill: {
                 name: formData.fullName || '',
                 email: formData.email || '',
@@ -49,7 +101,7 @@ const Booking = () => {
         rzp.open();
     } catch (error) {
         console.error(error);
-        alert('Failed to initiate payment');
+        toast.error('Failed to initiate payment');
     }
 };
 
@@ -127,16 +179,29 @@ const Booking = () => {
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-gray-700">Session between</h3>
               <div className="grid md:grid-cols-2 gap-6">
-                {['First date ', 'Last Date'].map((label, idx) => (
-                  <div key={idx}>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
-                    <input
-                      type="date"
-                      required
-                      className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    />
-                  </div>
-                ))}
+               <div className="grid md:grid-cols-2 gap-6">
+  <div>
+    <label className="block text-sm font-medium text-gray-700 mb-1">First Date</label>
+    <input
+      type="date"
+      required
+      value={dates.firstDate}
+      onChange={(e) => setDates({ ...dates, firstDate: e.target.value })}
+      className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+    />
+  </div>
+  <div>
+    <label className="block text-sm font-medium text-gray-700 mb-1">Last Date</label>
+    <input
+      type="date"
+      required
+      value={dates.lastDate}
+      onChange={(e) => setDates({ ...dates, lastDate: e.target.value })}
+      className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+    />
+  </div>
+</div>
+
               </div>
             </div>
 
@@ -144,25 +209,33 @@ const Booking = () => {
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-gray-700">Duration</h3>
               <div className="grid md:grid-cols-3 gap-4">
-                {[
-                  { name: 'Standard guidance', price: '1200/hour', details: 'one Time guidance' },
-                  { name: 'Deluxe guidance', price: '1800/hour', details: 'One Time guidance + additional support(1 month)' },
-                  { name: 'Executive guidance', price: '2800/hour', details: 'Two Time guidance + additional support(6 months)' }
-                ].map((room, idx) => (
-                  <label
+                        {[
+                { name: 'Standard guidance', price: '1200/hour', details: 'one Time guidance' },
+                { name: 'Deluxe guidance', price: '1800/hour', details: 'One Time guidance + additional support(1 month)' },
+                { name: 'Executive guidance', price: '2800/hour', details: 'Two Time guidance + additional support(6 months)' }
+            ].map((room, idx) => (
+                <label
                     key={idx}
                     className="border rounded-lg p-4 hover:border-blue-500 hover:bg-blue-50 cursor-pointer"
-                  >
-                    <input type="radio" name="roomType" className="hidden peer" defaultChecked={idx === 0} />
+                >
+                    <input
+                        type="radio"
+                        name="roomType"
+                        value={room.name}
+                        checked={selectedPlan === room.name}
+                        onChange={(e) => setSelectedPlan(e.target.value)}
+                        className="hidden peer"
+                    />
                     <div className="peer-checked:border-blue-500 peer-checked:bg-blue-50 peer-checked:ring-2 peer-checked:ring-blue-200 border rounded-lg p-3">
-                      <div className="flex justify-between">
-                        <h4 className="font-medium text-gray-800">{room.name}</h4>
-                        <span className="text-blue-600 font-bold">{room.price}</span>
-                      </div>
-                      <p className="text-sm text-gray-600 mt-1">{room.details}</p>
+                        <div className="flex justify-between">
+                            <h4 className="font-medium text-gray-800">{room.name}</h4>
+                            <span className="text-blue-600 font-bold">{room.price}</span>
+                        </div>
+                        <p className="text-sm text-gray-600 mt-1">{room.details}</p>
                     </div>
-                  </label>
-                ))}
+                </label>
+            ))}
+
               </div>
             </div>
 

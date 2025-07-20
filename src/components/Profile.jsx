@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
+import{ toast }from 'react-hot-toast';
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ const Profile = () => {
 
   const handleLogout = () => {
     localStorage.removeItem('token');
-    console.log('✅ Token removed, user logged out.');
+    toast.success('Logged out successfully');
     navigate('/'); // optional redirect after logout
   };
 

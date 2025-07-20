@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
 const AuthModal = ({ onSuccess, onClose }) => {
     const [email, setEmail] = useState('');
@@ -16,10 +17,12 @@ const AuthModal = ({ onSuccess, onClose }) => {
         setLoading(true);
         setError('');
         try {
-            await axios.post('http://localhost:3000/api/send-otp', { email });
+            await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/send-otp`, { email });
+            toast.success('OTP sent to your email!');
             setOtpSent(true);
         } catch (err) {
             console.error(err);
+            toast.error('Failed to send OTP. Please try again.');
             setError(err.response?.data?.error || 'Failed to send OTP. Please try again.');
         } finally {
             setLoading(false);
@@ -42,6 +45,7 @@ const AuthModal = ({ onSuccess, onClose }) => {
         onSuccess(); // continue to dashboard or close modal
     } catch (err) {
         console.error(err);
+        toast.error('OTP verification failed. Please try again.');
         setError(err.response?.data?.error || 'Invalid OTP. Please try again.');
     } finally {
         setLoading(false);
