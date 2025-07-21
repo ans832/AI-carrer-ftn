@@ -157,7 +157,7 @@ const Chat = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-900 p-8 mt-10">
+        <div className="min-h-screen flex items-center justify-center bg-gray-900 p-8 mt-20">
             <input
                 type="file"
                 accept=".pdf,.doc,.docx"
@@ -219,31 +219,31 @@ const Chat = () => {
                 </div>
 
                 {!awaitingQuizAnswers && (
-                    <div className="flex items-center space-x-2 sm:space-x-4">
-                        <button
-                            onClick={() => fileInputRef.current.click()}
-                            disabled={loading}
-                            className="bg-green-500 text-white p-3 rounded-lg hover:bg-green-600 disabled:opacity-50 text-sm sm:text-base"
-                        >
-                            Upload Resume
-                        </button>
-                        <input
-                            type="text"
-                            placeholder={loading ? "AI is typing..." : "Type your message..."}
-                            className="flex-grow p-3 rounded-lg border focus:outline-none"
-                            value={input}
-                            onChange={e => setInput(e.target.value)}
-                            onKeyDown={e => e.key === 'Enter' && handleSend()}
-                            disabled={loading}
-                        />
-                        <button
-                            onClick={handleSend}
-                            disabled={loading}
-                            className="bg-blue-500 text-white p-3 rounded-lg hover:bg-blue-600 disabled:opacity-50"
-                        >
-                            Send
-                        </button>
-                    </div>
+                    <div className="flex flex-wrap gap-2 sm:gap-4">
+    <button
+        onClick={() => fileInputRef.current.click()}
+        disabled={loading}
+        className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 disabled:opacity-50 text-sm sm:text-base min-w-[120px]"
+    >
+        Upload Resume
+    </button>
+    <input
+        type="text"
+        placeholder={loading ? "AI is typing..." : "Type your message..."}
+        className="flex-grow p-3 rounded-lg border focus:outline-none w-full sm:w-auto"
+        value={input}
+        onChange={e => setInput(e.target.value)}
+        onKeyDown={e => e.key === 'Enter' && handleSend()}
+        disabled={loading}
+    />
+    <button
+        onClick={handleSend}
+        disabled={loading}
+        className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 disabled:opacity-50 text-sm sm:text-base min-w-[80px]"
+    >
+        Send
+    </button>
+</div>
                 )}
             </div>
         </div>
