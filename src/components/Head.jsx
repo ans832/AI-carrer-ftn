@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 import Profile from './Profile.jsx';
 import { useNavigate } from 'react-router-dom';
 import Features from './Features.jsx';
+
 const Head = () => {
   const [navbarOpen, setNavbarOpen] = React.useState(false);
     const [showProfile, setShowProfile] = useState(false);
@@ -16,7 +17,7 @@ const Head = () => {
     navigate('/Partners');
   } 
   const tms = () => {
-    navigate('/Team');
+    navigate('/Booked');
   }
   const rvws = () => {
     navigate('/Reviews');
@@ -91,11 +92,11 @@ const Head = () => {
                </button>
               
              </div>
-             <a onClick={tms} class="mr-12 md:ml-11 ml-0 cursor-pointer text-gray-300 hover:text-white font-semibold tr04">
-               Team
+             <a   onClick={rvws} class="mr-12 md:ml-11 ml-0 cursor-pointer text-gray-300 hover:text-white font-semibold tr04">
+               Reviews
              </a>
-             <a onClick={rvws} class="mr-5 cursor-pointer text-gray-300 hover:text-white font-semibold tr04">
-               reviews
+             <a onClick={tms} class="mr-5 cursor-pointer text-gray-300 hover:text-white font-semibold tr04">
+               Bookings
              </a>
            </div>
           

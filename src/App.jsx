@@ -1,4 +1,5 @@
 import React from 'react';
+import { useState, useEffect } from 'react';
 import './App.css';
 import Head from './components/Head';
 import Main from './components/Main';
@@ -11,11 +12,21 @@ import Team from './components/Team';
 import Partners from './components/Partners';
 import Reviews from './components/Reviews';
 import Features from './components/Features.jsx';
+import Booked from './components/Booked';
 
 function App() {
+   const [userEmail, setUserEmail] = useState('');
+
+    useEffect(() => {
+        // Retrieve from localStorage if stored during login
+        const email = localStorage.getItem('userEmail');
+        if (email) {
+            setUserEmail(email);
+        }
+    }, []);
   return (
     <BrowserRouter>
-      <Head />
+      <Head userEmail={userEmail} />
        <Toaster position="top-center" />
       <Routes>
        
@@ -27,6 +38,7 @@ function App() {
         <Route path="/Partners" element={<Partners />} />
         <Route path="/Reviews" element={<Reviews />} />
         <Route path="/Features" element={<Features />} />
+        <Route path="/Booked" element={<Booked userEmail={userEmail} />} />
 
         
       </Routes>

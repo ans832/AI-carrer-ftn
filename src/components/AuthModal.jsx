@@ -41,6 +41,7 @@ const AuthModal = ({ onSuccess, onClose }) => {
 
         // ✅ Store JWT token securely
         localStorage.setItem('token', response.data.token);
+        localStorage.setItem('userEmail', email);
 
         onSuccess(); // continue to dashboard or close modal
     } catch (err) {

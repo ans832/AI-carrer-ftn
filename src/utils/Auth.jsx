@@ -13,12 +13,14 @@ export const isTokenValid = () => {
             return true; // Token is valid
         } else {
             console.log("Token expired, removing from localStorage.");
-            localStorage.removeItem('token'); // 🚫 Remove expired token automatically
+            localStorage.removeItem('token');
+            localStorage.removeItem('userEmail'); // 🚫 Remove expired token automatically
             return false;
         }
     } catch (error) {
         console.error("Invalid token:", error);
-        localStorage.removeItem('token'); // 🚫 Remove invalid/corrupted token automatically
+        localStorage.removeItem('token');
+         // 🚫 Remove invalid/corrupted token automatically
         return false;
     }
 };
