@@ -7,7 +7,7 @@ import { flushSync } from 'react-dom';
 
 const Chat = () => {
     const [messages, setMessages] = useState([
-        { id: 1, sender: 'AI', text: "Hellooo!", type: 'received' },
+        { id: 1, sender: 'AI', text: "Hellooo! (say HII to start)", type: 'received' },
     ]);
     const [input, setInput] = useState('');
     const [loading, setLoading] = useState(false);
@@ -42,7 +42,7 @@ const Chat = () => {
                 return;
             }
 
-            const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/chat`, { message: userMessage.text });
+            const res = await axios.post("https://careerbackend-1-hoxd.onrender.com/api/chat", { message: userMessage.text });
 
             if (res.data.response.type === "quiz") {
                 setQuizQuestions(res.data.response.questions);
@@ -155,31 +155,39 @@ const handleQuizSubmit = async () => {
                             </div>
                         )
                     ))}
-
-                  {quizQuestions && (
+{quizQuestions && (
     <div className="space-y-4">
+        <h2 className="text-lg font-semibold text-gray-800 text-center mb-2">
+            Answer the following questions (Yes/No)
+        </h2>
         {quizQuestions.map(q => (
-            <div key={q.id} className="flex items-center space-x-4">
-                <p className="font-medium text-gray-800 w-2/3">{q.id}. {q.question}</p>
+            <div
+                key={q.id}
+                className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 bg-white border rounded-lg p-3 shadow-sm hover:shadow transition-shadow duration-200"
+            >
+                <p className="text-gray-700 font-medium flex-1">
+                    {q.id}. {q.question}
+                </p>
                 <input
                     type="text"
-                    placeholder="Yes/No"
-                    className="flex-grow p-2 border rounded"
+                    placeholder="Yes / No"
+                    className="p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
                     onChange={e => handleQuizAnswerChange(q.id, e.target.value)}
                 />
             </div>
         ))}
-        <div className="flex justify-center">
+        <div className="flex justify-center mt-4">
             <button
                 onClick={handleQuizSubmit}
-                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:opacity-50"
+                className={`bg-blue-600 text-white px-5 py-2 rounded-lg font-semibold shadow hover:bg-blue-700 transition disabled:opacity-50`}
                 disabled={loading}
             >
-                Submit Quiz
+                {loading ? "Submitting..." : "Submit Quiz"}
             </button>
         </div>
     </div>
 )}
+
 
                     <div ref={messagesEndRef} />
                 </div>
